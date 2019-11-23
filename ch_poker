@@ -161,34 +161,34 @@ class Ranking(object):
             
     def rank (self):
         if self.straight() and self.flush() and self.straight() == 14:
-            print("Роял Флеш!")
+            return "Роял Флеш!"
 
         elif self.straight() and self.flush():
-            print("Стрит Флеш!")
+            return "Стрит Флеш!"
 
         elif self.fourKind():
-            print("Каре!")
+            return "Каре!"
 
         elif self.fullHouse():
-            print("Фул Хаус!")
+            return "Фул Хаус!"
 
         elif self.flush():
-            print("Флеш!")
+            return "Флеш!"
 
         elif self.straight():
-            print("Стрит!")
+            return "Стрит!"
 
         elif self.threeKind():
-            print("Сет!")
+            return "Сет!"
 
         elif self.twoPairs():
-            print("Две пары!")
+            return "Две пары!"
         
         elif self.onePair():
-            print("Одна пара!")
+            return "Одна пара!"
         
         else:
-            print('Старшая карта!')
+            return 'Старшая карта!'
         
 #Игрок расставляет карты в бокс        
 class Dealing(Table, StandartDeck):
@@ -214,9 +214,7 @@ class Dealing(Table, StandartDeck):
         
         print('Оставшиеся карты')
         print(player_cards)
-    
-    
-    
+
 #Процесс игры
 def Game():
     end = False
@@ -317,10 +315,10 @@ def Game():
         back_rank = Ranking(table.back)
         
         print('Результаты:')
-        front_rank.rank()
-        middle_rank.rank()
-        back_rank.rank()
+        print('ФРОНТ '+ front_rank)
+        print('МИДЛ '+ middle_rank)
+        print('БЭК '+ back_rank)
         
         end = True
         
-game = Game()    
+game = Game()
