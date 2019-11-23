@@ -317,9 +317,9 @@ def Game():
         back_rank = Ranking(table.back)
         
         print('Результаты:')
-        print('Фронт {}'.format(front_rank.rank()))
-        print('Мидл {}'.format(middle_rank.rank()))
-        print('Бек {}'.format(back_rank.rank()))
+        front_rank.rank()
+        middle_rank.rank()
+        back_rank.rank()
         
         end = True
         
