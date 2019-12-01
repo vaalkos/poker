@@ -238,7 +238,6 @@ class Dealing(Table, StandartDeck):
         print('Оставшиеся карты')
         print(player_cards)
     
-    
 #Процесс игры
 def Game():
     end = False
@@ -250,7 +249,6 @@ def Game():
         dealing = Dealing()
         #Тасуем колоду
         deck.shuffle()
-
         
         ################  Первая улица  ################
         
@@ -264,15 +262,16 @@ def Game():
         print("Вам раздали {0} {1} {2} {3} {4}".format(*player.cards))
         
         print('Теперь поставьте карты в боксы')
+        print('Пример: f:1,2|m:3,4|b:5  , где буквы - боксы, цифры - порядковые номера карт')
+        print('Если не кладешь карты в бокс, то ничего не пиши. Пример: f:1,2|m:3,4')
         
         dealing.deal_to_box(player.cards, table.front, table.middle, table.back)
 
 
         dealing.deal_message(player.cards, table.front, table.middle, table.back)
         
-        print(len(deck.cards))
         
-        ################  Остальные 4 улицы  ################
+        ################  Остальные улицы  ################
         
         for deal_card in range(4):
         #Раздаем игроку 5 карт
@@ -285,6 +284,8 @@ def Game():
             print("Вам раздали {0} {1} {2}".format(*player.cards))
 
             print('Теперь поставьте карты в боксы')
+            print('Пример: f:1,2|m:3,4|b:5  , где буквы - боксы, цифры - порядковые номера карт')
+            print('Если не кладешь карты в бокс, то ничего не пиши. Пример: f:1,2|m:3,4')
 
             dealing.deal_to_box(player.cards, table.front, table.middle, table.back)
 
