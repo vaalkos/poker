@@ -82,7 +82,10 @@ class Ranking(object):
     
     def flush(self):
         suits = [card.suit for card in self.cards]
-        if len( set(suits) ) == 1:
+        if not len(self.cards) == 5:
+            return False
+        
+        elif len( set(suits) ) == 1:
             
             return True
     
@@ -90,7 +93,7 @@ class Ranking(object):
         values = [card.value for card in self.cards]
         values.sort()
         
-        if not len(set(values)) == 5:
+        if not len(set(values)) == 5 and not len(self.cards) == 5:
             return False
         
         if values[4] == 14 and values[0] == 2 and values[1] == 3 and values[2] == 4 and values[3] == 5:
@@ -161,34 +164,38 @@ class Ranking(object):
             
     def rank (self):
         if self.straight() and self.flush() and self.straight() == 14:
-            return "Роял Флеш!"
+            return "Роял Флеш!" , 10
 
         elif self.straight() and self.flush():
-            return "Стрит Флеш!"
+            return "Стрит Флеш!" , 9
 
         elif self.fourKind():
-            return "Каре!"
+            return "Каре!" , 8
 
         elif self.fullHouse():
-            return "Фул Хаус!"
+            return "Фул Хаус!" , 7
 
         elif self.flush():
-            return "Флеш!"
+            return "Флеш!" , 6
 
         elif self.straight():
-            return "Стрит!"
+            return "Стрит!" , 5
 
         elif self.threeKind():
-            return "Сет!"
+            return "Сет!" , 4
 
         elif self.twoPairs():
-            return "Две пары!"
+            return "Две пары!" , 3
         
         elif self.onePair():
-            return "Одна пара!"
+            return "Одна пара!" , 2
         
         else:
-            return 'Старшая карта!'
+            return 'Старшая карта!', 1
+        
+class Scoring(Ranking):
+    def dead_hand(self, front, middle, back):
+        return front.rank()[1], middle.rank()[1], back.rank()[1]
         
 #Игрок расставляет карты в бокс        
 class Dealing(Table, StandartDeck):
@@ -237,7 +244,6 @@ class Dealing(Table, StandartDeck):
         
         print('Оставшиеся карты')
         print(player_cards)
-    
 #Процесс игры
 def Game():
     end = False
@@ -298,10 +304,17 @@ def Game():
         middle_rank = Ranking(table.middle)
         back_rank = Ranking(table.back)
         
-        print('Результаты:')
-        print('ФРОНТ '+ front_rank.rank())
-        print('МИДЛ '+ middle_rank.rank())
-        print('БЭК '+ back_rank.rank())
+        
+        if front_rank.rank()[1] > middle_rank.rank()[1]:
+            print("Мертвая рука")
+        elif middle_rank.rank()[1] > back_rank.rank()[1]:
+            print("Мертвая рука")
+        else:
+            print('Результаты:')
+            print('ФРОНТ '+ front_rank.rank()[0])
+            print('МИДЛ '+ middle_rank.rank()[0])
+            print('БЭК '+ back_rank.rank()[0])
+        
         
         end = True
         
