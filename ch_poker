@@ -192,18 +192,41 @@ class Ranking(object):
         
 #Игрок расставляет карты в бокс        
 class Dealing(Table, StandartDeck):
-    def deal_to_box(self, player_cards, box):
-        try:
-            choicePlayer = list(np.int32(input().split(',')))
-        except:
-            choicePlayer = []
-            
-        for del_index in choicePlayer:
-            box.append(player_cards[del_index-1])
-            
-        player_cards[:] = [x for n,x in enumerate(player_cards) if n+1 not in choicePlayer]
+    def deal_to_box(self, player_cards, l_front, l_middle, l_back):
+        s = input()
+
+        choicePlayer = []
+        dic_input = {}
+        temp = []
+
+        for i in s.split('|'):
+            temp.append(i)
+
+        for j in temp:
+            dic_input.update({j.split(':')[0]:j.split(':')[1]})
+
+        dic_input = {k: np.int8(v.split(',')) for k, v in dic_input.items()}
+
+        if 'f' in dic_input.keys():
+            for key in dic_input['f']:
+                l_front.append(player_cards[key-1])
+
+        if 'm' in dic_input.keys():
+            for key in dic_input['m']:
+                l_middle.append(player_cards[key-1])
+
+        if 'b' in dic_input.keys():
+            for key in dic_input['b']:
+                l_back.append(player_cards[key-1])
+
+        for i in dic_input.values():
+            for j in i:
+                choicePlayer.append(j)
+
+        player_cards.clear()
         
-        return player_cards, box
+        return player_cards, l_front, l_middle, l_back
+    
     
     #Сообщение о том как карты расположены в боксах и сколько карт осталось у игрока
     def deal_message(self, player_cards, front, middle, back):
@@ -214,7 +237,8 @@ class Dealing(Table, StandartDeck):
         
         print('Оставшиеся карты')
         print(player_cards)
-
+    
+    
 #Процесс игры
 def Game():
     end = False
@@ -231,7 +255,7 @@ def Game():
         ################  Первая улица  ################
         
         #Раздаем игроку 5 карт
-        for i in range(5):
+        for deal_card in range(5):
             player.addCard(deck.deal())
             
         #Показываем разданные карты
@@ -241,35 +265,17 @@ def Game():
         
         print('Теперь поставьте карты в боксы')
         
-        for i in range(1):
-        ############### Бэк
-            print('Начнем с БЭК. Выберите (через запятую) номера карт, которые нужно поставить туда. Номера с 1 до 5')
-            dealing.deal_to_box(player.cards, table.back)
-            dealing.deal_message(player.cards, table.front, table.middle, table.back)
-            
-            if len(player.cards) == 0:
-                break
-                
-            ###############   Мидл
-            print('Теперь МИДЛ')
-            dealing.deal_to_box(player.cards, table.middle)
-            dealing.deal_message(player.cards, table.front, table.middle, table.back)
-            
-            if len(player.cards) == 0:
-                break
-                
-            ##############   Фронт
-            print('Теперь ФРОНТ')
-            dealing.deal_to_box(player.cards, table.front)
-            dealing.deal_message(player.cards, table.front, table.middle, table.back)
-            
-            if len(player.cards) == 0:
-                break
+        dealing.deal_to_box(player.cards, table.front, table.middle, table.back)
+
+
+        dealing.deal_message(player.cards, table.front, table.middle, table.back)
         
-        ################ Следующие улицы (по три карты)  ################
+        print(len(deck.cards))
         
-        while len(table.front) <3 and len(table.middle) <5 and len(table.back) <5:
-            print('Следующая улица')
+        ################  Остальные 4 улицы  ################
+        
+        for deal_card in range(4):
+        #Раздаем игроку 5 карт
             for i in range(3):
                 player.addCard(deck.deal())
 
@@ -280,34 +286,11 @@ def Game():
 
             print('Теперь поставьте карты в боксы')
 
+            dealing.deal_to_box(player.cards, table.front, table.middle, table.back)
 
-            ############### Бек
-            print('Начнем с БЭК. Выберите (через запятую) номера карт, которые нужно поставить туда. Номера с 1 до 5')
-            dealing.deal_to_box(player.cards, table.back)
             dealing.deal_message(player.cards, table.front, table.middle, table.back)
-           
-            if len(player.cards) == 1:
-                break
-
-            ###############   Мидл
-            print('Теперь МИДЛ')
-            dealing.deal_to_box(player.cards, table.middle)
-            dealing.deal_message(player.cards, table.front, table.middle, table.back)
-            
-            if len(player.cards) == 1:
-                break
-                
-            ##############   Бэк
-            print('Теперь ФРОНТ')
-            dealing.deal_to_box(player.cards, table.front)
-            dealing.deal_message(player.cards, table.front, table.middle, table.back)
-            
-            if len(player.cards) == 1:
-                break
-                
-            player.cards = []
-            
         
+
         # Подсчет комбинаций
         
         front_rank = Ranking(table.front)
@@ -315,9 +298,9 @@ def Game():
         back_rank = Ranking(table.back)
         
         print('Результаты:')
-        print('ФРОНТ '+ front_rank())
-        print('МИДЛ '+ middle_rank())
-        print('БЭК '+ back_rank())
+        print('ФРОНТ '+ front_rank.rank())
+        print('МИДЛ '+ middle_rank.rank())
+        print('БЭК '+ back_rank.rank())
         
         end = True
         
